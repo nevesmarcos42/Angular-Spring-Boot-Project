@@ -1,8 +1,10 @@
 package com.neves.api_records_crud.controller;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +21,19 @@ public class UserController {
 
     // Endpoint para criar um novo usuário
     @PostMapping
-    public UserModel createUserModel(@RequestBody UserModel userModel) {
+    public UserModel createUserModel(@Valid @RequestBody UserModel userModel) { // @Valid Adicionada validação do corpo da requisição
         return userService.creatUserModel(userModel);
     }
 
     // Endpoint para listar todos os usuários
     @GetMapping
-    public List<UserModel> getAllUserModels() {
-        return userService.getAllUserModels();
+    public Page<UserModel> getAllUserModels(Pageable pageable) {
+        return userService.getAllUserModels(pageable);
     }
 
     // Endpoint para obter um usuário por ID
     @GetMapping("/{id}")
-    public ResponseEntity <UserModel> getUserModelById(@PathVariable Long id) {
+    public ResponseEntity <UserModel> getUserModelById(@PathVariable Long id) { 
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

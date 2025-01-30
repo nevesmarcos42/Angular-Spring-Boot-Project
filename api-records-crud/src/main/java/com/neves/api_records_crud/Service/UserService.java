@@ -1,28 +1,37 @@
 package com.neves.api_records_crud.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.neves.api_records_crud.model.UserModel;
 import com.neves.api_records_crud.repository.UserRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.validation.Valid;
+
 @Service // Indica que esta classe é um serviço Spring
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class); // Logger adicionado 
     
     @Autowired // Injeta a dependência do repositório
     private UserRepository userRepository;
 
     // Método para criar um novo usuário
-    public UserModel creatUserModel(UserModel userModel) {
+    public UserModel creatUserModel(@Valid UserModel userModel) {
+        logger.info("Criando usuário com email: {}", userModel.getEmail()); // Log adicionado
         return userRepository.save(userModel);
     }
     
     // Método para listar todos os usuário
-    public List<UserModel> getAllUserModels() {
-        return userRepository.findAll();
+    public Page<UserModel> getAllUserModels( Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
     
     // Método para obter um usuário por ID
